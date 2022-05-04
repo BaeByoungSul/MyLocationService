@@ -64,7 +64,7 @@ namespace AppService025.Droid
             StartForeground(ServiceRunningNotifID, notif);
 
             Console.WriteLine("Service Started");
-            Device.StartTimer(TimeSpan.FromSeconds(1), () =>
+            Device.StartTimer(TimeSpan.FromSeconds(2), () =>
             {
                 // do something every 60 seconds
                 Device.BeginInvokeOnMainThread(async () =>

@@ -17,14 +17,14 @@ namespace AppService025
             btnStart.Clicked += BtnStart_Clicked;
             btnStop.Clicked += BtnStop_Clicked;
 
-            MessagingCenter.Unsubscribe<string>(this, "Location");
+            MessagingCenter.Unsubscribe<MyLocationMessage>(this, "Location");
             MessagingCenter.Subscribe<MyLocationMessage>(this, "Location", (location) =>
             {
-                Console.WriteLine($"Latitude: {location.Latitude}, Longitude: {location.Longitude}, Altitude: {location.Altitude}");
+                //Console.WriteLine($"Latitude: {location.Latitude}, Longitude: {location.Longitude}, Altitude: {location.Altitude}");
             
                 Device.BeginInvokeOnMainThread(() =>
                 {
-                    lblCounterValue.Text += $"{Environment.NewLine}{location.Latitude}, {location.Longitude}, {DateTime.Now.ToLongTimeString()}";
+                    lblCounterValue.Text += $"{Environment.NewLine}{location.Latitude}, {location.Longitude}, {location.PointTime.ToLongTimeString()}";
 
                 }
                 //lblCounterValue.Text = sloc
@@ -32,6 +32,22 @@ namespace AppService025
                 );
 
             });
+            MessagingCenter.Unsubscribe<MyLocationErrorMessage>(this, "LocationError");
+            MessagingCenter.Subscribe<MyLocationErrorMessage>(this, "LocationError", (location) =>
+            {
+                //Console.WriteLine($"Error Message: {location.ErrorMessage}");
+
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    lblCounterValue.Text += $"{Environment.NewLine}{location.ErrorMessage}, {location.ErrorTime.ToLongTimeString()}";
+
+                }
+                //lblCounterValue.Text = sloc
+
+                );
+
+            });
+
         }
         private void BtnStart_Clicked(object sender, EventArgs e)
         {

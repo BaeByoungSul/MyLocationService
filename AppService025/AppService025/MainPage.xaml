@@ -11,8 +11,11 @@
         <Entry x:Name="entSecond" Text="2" Placeholder="input seconds"   />
         <Button x:Name="btnStart" Text="Start Service" TextTransform="None" />
         <Button x:Name="btnStop" Text="Stop Service" TextTransform="None" />
-
-        <Label x:Name="lblMainMessage" />
+        <ScrollView>
+            <Label x:Name="lblMainMessage" />
+        </ScrollView>
+        
+        
         <Label x:Name="lblCounterValue" />
     
     </StackLayout>
