@@ -154,6 +154,7 @@ namespace AppService025.Droid
 
         async Task GetCurrentLocation()
         {
+         
             try
             {
                 var request = new GeolocationRequest(GeolocationAccuracy.High);

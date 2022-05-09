@@ -68,8 +68,16 @@ namespace AppService025
             });
 
         }
-        private void BtnStart_Clicked(object sender, EventArgs e)
+        private async void BtnStart_Clicked(object sender, EventArgs e)
         {
+           // var permission = await Xamarin.Essentials.Permissions.RequestAsync<Xamarin.Essentials.Permissions.LocationAlways>();
+            //var status = await Permissions.RequestAsync<Permissions.LocationWhenInUse>();
+            var status = await Permissions.RequestAsync<Permissions.LocationAlways>();
+
+            if (status == PermissionStatus.Denied)
+            {
+                return;
+            }
             DependencyService.Get<IServiceOnOff>().StartService();
 
             //var startMessage = new MyStartMessage()
