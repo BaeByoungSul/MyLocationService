@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
@@ -11,12 +12,19 @@ namespace AppService025
 {
     public partial class MainPage : ContentPage
     {
+        //ObservableCollection<PP0370_Model> lstStock = new ObservableCollection<PP0370_Model>();
+        //List<MyLocationMessage> lstLocation = new List<MyLocationMessage>();
+        ObservableCollection<MyLocationMessage> lstLocation = new ObservableCollection<MyLocationMessage>();
+
         public MainPage()
         {
             InitializeComponent();
+
+            
             btnStart.Clicked += BtnStart_Clicked;
             btnStop.Clicked += BtnStop_Clicked;
 
+            
             MessagingCenter.Unsubscribe<MyLocationMessage>(this, "Location");
             MessagingCenter.Subscribe<MyLocationMessage>(this, "Location", (location) =>
             {
@@ -24,7 +32,17 @@ namespace AppService025
             
                 Device.BeginInvokeOnMainThread(() =>
                 {
-                    lblCounterValue.Text += $"{Environment.NewLine}{location.Latitude}, {location.Longitude}, {location.PointTime.ToLongTimeString()}";
+                    lstLocation.Add(new MyLocationMessage() {
+                        Latitude = location.Latitude,
+                        Longitude = location.Longitude,
+                        Altitude = location.Altitude,
+                        PointTime = location.PointTime
+                        }
+                    );
+                    locCollectionView.ItemsSource = lstLocation;
+
+
+                    //lblCounterValue.Text += $"{Environment.NewLine}{location.Latitude}, {location.Longitude}, {location.PointTime.ToLongTimeString()}";
 
                 }
                 //lblCounterValue.Text = sloc
@@ -32,6 +50,7 @@ namespace AppService025
                 );
 
             });
+
             MessagingCenter.Unsubscribe<MyLocationErrorMessage>(this, "LocationError");
             MessagingCenter.Subscribe<MyLocationErrorMessage>(this, "LocationError", (location) =>
             {
@@ -39,7 +58,7 @@ namespace AppService025
 
                 Device.BeginInvokeOnMainThread(() =>
                 {
-                    lblCounterValue.Text += $"{Environment.NewLine}{location.ErrorMessage}, {location.ErrorTime.ToLongTimeString()}";
+                    lblLocatonError.Text += $"{Environment.NewLine}{location.ErrorMessage}, {location.ErrorTime.ToLongTimeString()}";
 
                 }
                 //lblCounterValue.Text = sloc

@@ -24,7 +24,26 @@ namespace AppService025.Droid
 
         public void StartService()
         {
+
+            if (IsServiceRunning(typeof(MyLocationService))) {
+
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    var errormessage = new MyLocationErrorMessage()
+                    {
+                        ErrorMessage = "Service is already running!!",
+                        ErrorTime = DateTime.Now
+
+                    };
+                    MessagingCenter.Send(errormessage, "LocationError");
+                });
+                return;
+                //StopService(serviceIntent);
+            }
+            
+
             var intent = new Intent(context, typeof(MyLocationService));
+
 
             if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.O)
             {
@@ -38,14 +57,51 @@ namespace AppService025.Droid
 
         public void StopService()
         {
-            var intent = new Intent(context, typeof(MyLocationService));
-            context.StopService(intent);
+            if (IsServiceRunning(typeof(MyLocationService)))
+            {
+
+
+
+                var intent = new Intent(context, typeof(MyLocationService));
+                context.StopService(intent);
+
+            }
+            else
+            {
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    var errormessage = new MyLocationErrorMessage()
+                    {
+                        ErrorMessage = "Service is already stopped!!",
+                        ErrorTime = DateTime.Now
+
+                    };
+                    MessagingCenter.Send(errormessage, "LocationError");
+                });
+                return;
+            }
+
+        }
+
+        private bool IsServiceRunning(System.Type cls)
+        {
+            ActivityManager manager = (ActivityManager)context.GetSystemService(Context.ActivityService);
+            foreach (var service in manager.GetRunningServices(int.MaxValue))
+            {
+                if (service.Service.ClassName.Equals(Java.Lang.Class.FromType(cls).CanonicalName))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
+
+
     [Service]
     public class MyLocationService : Service
     {
-        int counter;
+       //int counter;
         bool isRunningTimer = true;
         CancellationTokenSource cts;
 
@@ -64,8 +120,9 @@ namespace AppService025.Droid
             StartForeground(ServiceRunningNotifID, notif);
 
             Console.WriteLine("Service Started");
-            Device.StartTimer(TimeSpan.FromSeconds(2), () =>
+            Device.StartTimer(TimeSpan.FromSeconds(20), () =>
             {
+
                 // do something every 60 seconds
                 Device.BeginInvokeOnMainThread(async () =>
                 {
@@ -83,7 +140,7 @@ namespace AppService025.Droid
             Console.WriteLine("Service Stopped");
             StopSelf();
             isRunningTimer = false;
-            counter = 0;
+            //counter = 0;
             if (cts != null && !cts.IsCancellationRequested)
                 cts.Cancel();
 
@@ -94,8 +151,6 @@ namespace AppService025.Droid
         {
             return base.StopService(name);
         }
-
-        
 
         async Task GetCurrentLocation()
         {
@@ -151,7 +206,7 @@ namespace AppService025.Droid
         }
         //async Task GetCurrentLocation()
         //{
-            
+
         //    try
         //    {
         //        var request = new GeolocationRequest(GeolocationAccuracy.High,TimeSpan.FromSeconds(10));
@@ -170,7 +225,7 @@ namespace AppService025.Droid
         //                MessagingCenter.Send(message, "Location");
         //            });
         //        }
-                
+
         //    }
         //    catch (FeatureNotSupportedException fnsEx)
         //    {
@@ -188,9 +243,12 @@ namespace AppService025.Droid
         //    {
         //        // Unable to get location
         //    }
-            
-            
+
+
         //}
+
+
+       
     }
         
     

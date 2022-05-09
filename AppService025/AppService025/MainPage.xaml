@@ -5,19 +5,42 @@
 
     <StackLayout>
         <Frame>
-            <Label Text="My First Background Service!" HorizontalTextAlignment="Center" TextColor="White" FontSize="36"/>
+            <Label Text="My First Background Service!" HorizontalTextAlignment="Center" TextColor="Black" FontSize="36"/>
         </Frame>
         <Label Text="Interval To Track Location(Seconds):"/>
         <Entry x:Name="entSecond" Text="2" Placeholder="input seconds"   />
         <Button x:Name="btnStart" Text="Start Service" TextTransform="None" />
         <Button x:Name="btnStop" Text="Stop Service" TextTransform="None" />
-        <ScrollView>
+        <!--<ScrollView>
             <Label x:Name="lblMainMessage" />
         </ScrollView>
-        
-        
-        <Label x:Name="lblCounterValue" />
-    
+        <Label x:Name="lblCounterValue" />-->
+        <CollectionView x:Name="locCollectionView"
+                    Margin="20"
+                    SelectionMode="Single">
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout Orientation="Vertical" ItemSpacing="10"/>
+            </CollectionView.ItemsLayout>
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <StackLayout Orientation="Horizontal"  >
+                        <StackLayout Orientation="Vertical" >
+                            <Label Text="{Binding Latitude}" />
+                            <Label Text="{Binding Longitude}"/>
+                            <Label Text="{Binding Altitude}"/>
+                        </StackLayout>
+                        <Label Text="{Binding PointTime, StringFormat='{0:yyyy/MM/dd hh:mm:ss}'}" 
+                           HorizontalOptions="EndAndExpand"
+                           TextColor="Silver" 
+                           FontSize="Small"/>
+
+                    </StackLayout>
+
+
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+        <Label x:Name="lblLocatonError" />
     </StackLayout>
 
 </ContentPage>
